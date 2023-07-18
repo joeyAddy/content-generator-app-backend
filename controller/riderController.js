@@ -24,6 +24,7 @@ exports.createRider = catchAsync(async (req, res, next) => {
         user: req.body.user,
         plateNumber: req.body.plateNumber,
         vehicleCode: req.body?.vehicleCode,
+        location: req.body.location,
       });
       handleResponse(res, 201, newRider);
     } else {

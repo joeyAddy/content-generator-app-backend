@@ -14,7 +14,7 @@ const carRiderSchema = new mongoose.Schema({
   },
   plateNumber: {
     type: String,
-    required: true,
+    required: [true, "please provide your plate Number"],
     unique: true,
   },
   vehicleCode: {
@@ -26,6 +26,13 @@ const carRiderSchema = new mongoose.Schema({
   rating: {
     type: Number,
     default: 0,
+  },
+  location: {
+    type: Object,
+    required: [
+      true,
+      "please provide turn on your location and turn on location access for this app in settings",
+    ],
   },
   ridesCompleted: {
     type: Number,
