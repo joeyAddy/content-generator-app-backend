@@ -3,7 +3,9 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 dotEnv.config({ path: "./env/config.env" });
-require("./db/connection");
+const connection = require("./db/connection");
+
+connection();
 
 const app = require("./app");
 
@@ -20,5 +22,5 @@ const io = new Server(server, {
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-  console.log(`server run on ${port} port!`);
+  console.log(`server is running on ${port} port!`);
 });

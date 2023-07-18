@@ -4,6 +4,7 @@ const catchAsync = require("./../util/catchAsync");
 const AppError = require("./../util/appError");
 const sendEmail = require("./../util/email");
 const User = require("./../model/userModel");
+const { default: mongoose } = require("mongoose");
 
 // Make JWT token
 const createToken = (id) => {
@@ -25,7 +26,9 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signUp = catchAsync(async (req, res, next) => {
   const createUser = await User.create({
+    _id: new mongoose.Types.ObjectId(),
     email: req.body.email,
+    name: req.body.name,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     phone: req.body.phone,

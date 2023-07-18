@@ -12,10 +12,8 @@ var sendEmail = async (options) => {
   // });
 
   // create a transporter (Send Real Email) // nodemailer reg email & pass
-
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-
     auth: {
       user: "joey.dev.biz@gmail.com",
       pass: "frgskkdniiowzuuc",

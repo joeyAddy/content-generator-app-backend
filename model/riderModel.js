@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { nanoid } = require("nanoid");
+const uniqid = require("uniqid");
 
 // Define the CarRider Schema
 const carRiderSchema = new mongoose.Schema({
@@ -19,7 +19,9 @@ const carRiderSchema = new mongoose.Schema({
   },
   vehicleCode: {
     type: String,
-    default: () => nanoid(4), // Generate a random 4-character code using nanoid
+    required: true,
+    unique: true,
+    default: () => uniqid(), // Generate a random code using
   },
   rating: {
     type: Number,
@@ -39,7 +41,7 @@ const carRiderSchema = new mongoose.Schema({
 carRiderSchema.pre("save", async function (next) {
   // If vehicleCode is not provided or is empty, generate a new one
   if (!this.vehicleCode || this.vehicleCode.trim() === "") {
-    let generatedCode = nanoid(4);
+    let generatedCode = uniqid();
     while (true) {
       // Check if the generatedCode already exists in the database
       const existingCarRider = await this.constructor.findOne({
@@ -50,7 +52,7 @@ carRiderSchema.pre("save", async function (next) {
         break;
       }
       // Regenerate a new code if the generatedCode already exists
-      generatedCode = nanoid(4);
+      generatedCode = uniqid();
     }
   }
   next();

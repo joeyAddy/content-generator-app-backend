@@ -3,6 +3,7 @@ const catchAsync = require("../util/catchAsync");
 const CarRider = require("./../model/riderModel"); // Path to the CarRider model
 const AppError = require("./../util/appError");
 const sendEmail = require("./../util/email");
+const { default: mongoose } = require("mongoose");
 
 // Central function to handle responses
 const handleResponse = (res, statusCode, data) => {
@@ -21,8 +22,8 @@ exports.createRider = catchAsync(async (req, res, next) => {
       const newRider = await CarRider.create({
         _id: new mongoose.Types.ObjectId(),
         user: req.body.user,
-        phone: req.body.phone,
-        address: req.body.address,
+        plateNumber: req.body.plateNumber,
+        vehicleCode: req.body?.vehicleCode,
       });
       handleResponse(res, 201, newRider);
     } else {
@@ -44,16 +45,19 @@ exports.createRider = catchAsync(async (req, res, next) => {
     user.password = undefined; // hide pass from response
     createSendToken(user, 200, res);
   } catch (error) {
-    return next(new AppError("Somthing problem here!!!", 500));
+    return next(new AppError("Something went wrong here!!!", 500));
   }
 });
 
 // Function for retrieving a rider
 exports.getRider = catchAsync(async (req, res, next) => {
   try {
-    const rider = await CarRider.findById({ _id: req.params.id });
+    const rider = await CarRider.findById(req.query.id).populate(
+      "user",
+      "name phone"
+    );
     if (!rider) {
-      return next(new AppError("Rider not found", 404));
+      return next(new AppError(`Rider with ID ${req.query.id} not found`, 404));
     }
     handleResponse(res, 200, rider);
   } catch (error) {

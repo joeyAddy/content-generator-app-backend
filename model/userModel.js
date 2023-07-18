@@ -12,7 +12,6 @@ let userSchema = new mongoose.Schema({
     lowercase: true,
     unique: true,
   },
-  username: String,
   password: {
     type: String,
     required: [true, "please provide your password"],
@@ -33,6 +32,10 @@ let userSchema = new mongoose.Schema({
     type: String,
     required: [true, "please provide your phone number"],
   },
+  name: {
+    type: String,
+    required: [true, "please provide your name"],
+  },
   matricNo: {
     type: String,
     default: "NIL",
@@ -46,10 +49,10 @@ let userSchema = new mongoose.Schema({
 
 /*****Document middleware*****/
 // get User from email
-userSchema.pre("save", function (next) {
-  this.username = this.email.match(/^([^@]*)@/)[1];
-  next();
-});
+// userSchema.pre("save", function (next) {
+//   this.name = this.email.match(/^([^@]*)@/)[1];
+//   next();
+// });
 
 // hash passsword
 
