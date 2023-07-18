@@ -32,6 +32,10 @@ let userSchema = new mongoose.Schema({
     type: String,
     required: [true, "please provide your phone number"],
   },
+  origin: {
+    type: Object,
+    required: [true, "please provide the origin of your trip"],
+  },
   name: {
     type: String,
     required: [true, "please provide your name"],

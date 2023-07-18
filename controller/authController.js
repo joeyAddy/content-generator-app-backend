@@ -34,6 +34,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     phone: req.body.phone,
     matricNo: req.body?.matricNo,
     role: req.body.role,
+    origin: req.body.origin,
   });
 
   try {
