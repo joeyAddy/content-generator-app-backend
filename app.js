@@ -8,14 +8,7 @@ const riderRouter = require("./router/riderRouter");
 
 // Middleware
 app.use(express.json());
-app.use(
-  cors({
-    origin: "*",
-    // "https://k-track.netlify.app",
-    methods: "GET,POST,PATCH,DELETE",
-    // credentials: true,
-  })
-);
+app.use(cors());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
