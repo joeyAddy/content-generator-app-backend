@@ -1,17 +1,19 @@
+const Ride = require("../model/rideModel");
 const User = require("./../model/userModel");
 const calculateHaversineDistance = require("./calculateDistance");
 
 // Custom function to find a match based on origin, destination, and within a certain radius
-const findMatch = async (data, maxDistance) => {
-  const { origin } = data;
-
+const findMatch = async (origin, maxDistance) => {
   try {
     const availableRiders = await User.find({ role: "rider" });
-    const availableTravelers = await User.find({ role: "student" });
+    const availableRides = await Ride.find({ status: "available" }).populate(
+      "user",
+      "name phone"
+    );
 
     let closestDistance = Infinity;
     let matchedRider = null;
-    let matchedTraveler = null;
+    let matchedRides = null;
 
     availableRiders.forEach((rider) => {
       const distanceToRider = calculateHaversineDistance(
@@ -21,12 +23,12 @@ const findMatch = async (data, maxDistance) => {
         rider?.origin?.longitude
       );
 
-      availableTravelers.forEach((traveler) => {
+      availableRides.forEach((ride) => {
         const distanceToTraveler = calculateHaversineDistance(
           origin.latitude,
           origin.longitude,
-          traveler?.origin?.latitude,
-          traveler?.origin?.longitude
+          ride?.origin?.latitude,
+          ride?.origin?.longitude
         );
 
         const totalDistance = distanceToRider + distanceToTraveler;
@@ -34,14 +36,14 @@ const findMatch = async (data, maxDistance) => {
         if (totalDistance < closestDistance && totalDistance <= maxDistance) {
           closestDistance = totalDistance;
           matchedRider = rider;
-          matchedTraveler = traveler;
+          matchedRides = ride;
         }
       });
     });
 
-    if (matchedRider && matchedTraveler) {
+    if (matchedRider && matchedRides) {
       // Found a match, notify both parties
-      return { rider: matchedRider, traveler: matchedTraveler };
+      return { rider: matchedRider, rides: matchedRides };
     } else {
       // No match found
       return null;

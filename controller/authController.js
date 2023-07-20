@@ -30,7 +30,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     email: req.body.email,
     name: req.body.name,
     password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
+    confirmPassword: req.body.confirmPassword,
     phone: req.body.phone,
     matricNo: req.body?.matricNo,
     role: req.body.role,
@@ -54,20 +54,36 @@ exports.signUp = catchAsync(async (req, res, next) => {
 });
 
 exports.signin = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+  let user = null;
+  if (req.body.role === "rider") {
+    const { email, password } = req.body;
+    // Check email and password exist
+    if (!email && !password) {
+      return next(new AppError("provide correct login details", 400));
+    }
 
-  // Check email and password exist
-  if (!email || !password) {
-    return next(new AppError("provide email and password", 400));
+    // Check if user exists & password is correct
+    user = await User.findOne({ email }).select("+password");
+    if (!user || !(await user.comparePassword(password, user.password))) {
+      return next(new AppError("Incorrect email or password", 401));
+    }
   }
+  if (req.body.role === "student") {
+    const { matricNo, password } = req.body;
+    // Check matricNo and password exist
+    if (!matricNo && !password) {
+      return next(new AppError("provide correct login details", 400));
+    }
 
-  // Check if user exists & password is correct
-  const user = await User.findOne({ email }).select("+password");
-  if (!user || !(await user.comparePassword(password, user.password))) {
-    return next(new AppError("Incorrect email or password", 401));
+    // Check if user exists & password is correct
+    user = await User.findOne({ matricNo }).select("+password");
+    if (!user || !(await user.comparePassword(password, user.password))) {
+      return next(new AppError("Incorrect matricNo or password", 401));
+    }
   }
 
   try {
+    if (user === null) return;
     // Email data pass to email.js
     await sendEmail({
       email: user.email,

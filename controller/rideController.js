@@ -3,6 +3,8 @@ const Ride = require("../model/rideModel");
 const catchAsync = require("../util/catchAsync");
 const AppError = require("./../util/appError");
 const sendEmail = require("./../util/email");
+const CarRider = require("../model/riderModel");
+const findMatch = require("../util/findMatch");
 
 // Central function to handle responses
 const handleResponse = (res, statusCode, data) => {
@@ -26,6 +28,8 @@ exports.createRide = catchAsync(async (req, res, next) => {
         destination: req.body.destination,
         paymentMethod: req.body.paymentMethod,
         paymentStatus: req.body.paymentStatus,
+        from: req.body.from,
+        to: req.body.to,
         cordinates: req.body.cordinates,
       });
       handleResponse(res, 201, newRide);
@@ -53,6 +57,51 @@ exports.getRide = catchAsync(async (req, res, next) => {
       return next(new AppError("Ride not found", 404));
     }
     handleResponse(res, 200, ride);
+  } catch (error) {
+    next(new AppError(error.message, 500));
+  }
+});
+
+// Function for retrieving all rides
+exports.getAllRides = catchAsync(async (req, res, next) => {
+  try {
+    const ride = await Ride.find()
+      .populate("user", "name phone") // Populate the user field with username and email
+      .populate({
+        path: "rider",
+        populate: {
+          path: "user",
+          select: "name phone", // You can specify the fields to include from the userSchema
+        },
+      }); // Populate the rider field;
+    if (ride.length < 1) {
+      return next(new AppError("No Rides not found", 404));
+    }
+    handleResponse(res, 200, ride);
+  } catch (error) {
+    next(new AppError(error.message, 500));
+  }
+});
+
+// Function for retrieving all rides
+exports.getAllMatch = catchAsync(async (req, res, next) => {
+  try {
+    const queryParam = req.query.id;
+    const rider = await CarRider.findById(queryParam);
+    if (rider) {
+      const { matchedRides } = findMatch(rider.origin, 30);
+      if (matchedRides.length < 1) {
+        return next(new AppError("No Rides not found", 404));
+      }
+      handleResponse(res, 200, matchedRides);
+    } else {
+      return next(
+        new AppError(
+          "No Available rides at the moment please keep driving while we are searching",
+          404
+        )
+      );
+    }
   } catch (error) {
     next(new AppError(error.message, 500));
   }

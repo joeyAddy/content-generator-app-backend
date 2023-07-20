@@ -18,15 +18,14 @@ let userSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
   },
-  passwordConfirm: {
+  confirmPassword: {
     type: String,
-    required: [true, "please confirm your password"],
-    validate: {
-      validator: function (el) {
-        return el === this.password;
-      },
-      message: "password are not the same!!!",
+    required: true,
+    validator: function (value) {
+      // 'this' refers to the current document being validated
+      return value === this.password;
     },
+    message: "Passwords do not match",
   },
   phone: {
     type: String,
@@ -68,7 +67,7 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
 
   // Delete passwordConfirm field
-  this.passwordConfirm = undefined;
+  this.confirmPassword = undefined;
   next();
 });
 

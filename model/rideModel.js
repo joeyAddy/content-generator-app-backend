@@ -28,8 +28,13 @@ const rideSchema = new mongoose.Schema({
   },
   paymentStatus: {
     type: String,
-    required: true,
-    default: "Pending",
+    enum: ["pending", "paid", "confirmed"],
+    default: "pending",
+  },
+  status: {
+    type: String,
+    enum: ["available", "taken", "finished"],
+    default: "available",
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

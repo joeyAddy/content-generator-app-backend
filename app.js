@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
 const userRouter = require("./router/userRouter");
@@ -8,7 +7,6 @@ const riderRouter = require("./router/riderRouter");
 
 // Middleware
 app.use(express.json());
-app.use(cors());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));

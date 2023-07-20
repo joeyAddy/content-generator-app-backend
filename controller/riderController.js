@@ -53,12 +53,17 @@ exports.createRider = catchAsync(async (req, res, next) => {
 // Function for retrieving a rider
 exports.getRider = catchAsync(async (req, res, next) => {
   try {
-    const rider = await CarRider.findById(req.query.id).populate(
-      "user",
-      "name phone"
-    );
+    const queryParam = req.query.email;
+    const rider = await CarRider.find()
+      .populate({
+        path: "user",
+        match: { $or: [{ email: { $regex: new RegExp(queryParam, "i") } }] },
+        select: "name phone", // Select the 'name' field of the User model in the results
+      })
+      .exec();
+
     if (!rider) {
-      return next(new AppError(`Rider with ID ${req.query.id} not found`, 404));
+      return next(new AppError(`Rider does not have a profile`, 404));
     }
     handleResponse(res, 200, rider);
   } catch (error) {
