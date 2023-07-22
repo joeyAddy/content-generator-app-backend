@@ -17,8 +17,24 @@ const rideSchema = new mongoose.Schema({
     type: Object,
     required: true,
   },
-  coordinates: {
+  rideInfo: {
     type: Object,
+    required: true,
+  },
+  coordinates: {
+    type: Array,
+    required: true,
+  },
+  to: {
+    type: String,
+    required: true,
+  },
+  from: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: Number,
     required: true,
   },
   paymentMethod: {
@@ -44,7 +60,6 @@ const rideSchema = new mongoose.Schema({
   rider: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Rider",
-    default: "NIL",
   },
 });
 

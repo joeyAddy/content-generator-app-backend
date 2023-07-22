@@ -17,6 +17,10 @@ const handleResponse = (res, statusCode, data) => {
 exports.createRider = catchAsync(async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.body.user });
+    const rider = await CarRider.find({ user: req.body.user });
+    if (rider.length > 0) {
+      return next(new AppError("User already has a rider", 400));
+    }
 
     if (user) {
       const newRider = await CarRider.create({

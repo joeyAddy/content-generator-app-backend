@@ -5,7 +5,8 @@ let {
   updateRide,
   deleteRide,
   getAllRides,
-  getAllMatch,
+  getStudentMatch,
+  getRiderMatch,
 } = require("./../controller/rideController");
 const { protect, restrictTo } = require("../controller/authController");
 
@@ -14,7 +15,8 @@ let router = express.Router();
 router.post("/", createRide);
 router.get("/", getRide);
 router.get("/all", getAllRides);
-router.get("/match", getAllMatch);
+router.get("/student/match", getStudentMatch);
+router.get("/rider/match", getRiderMatch);
 router.patch("/", updateRide);
 router.delete("/", deleteRide);
 
