@@ -95,13 +95,10 @@ exports.getRiderMatch = catchAsync(async (req, res, next) => {
     const rider = await CarRider.findById(queryParam);
 
     if (rider !== null) {
-      console.log(rider);
-
       const { nearbyRides } = await findNearbyMatches(
         rider.location.latitude,
         rider.location.longitude
       );
-      console.log(nearbyRides, "matches");
       if (nearbyRides == undefined) {
         return next(new AppError("No Rides not found", 404));
       }
@@ -130,7 +127,6 @@ exports.getStudentMatch = catchAsync(async (req, res, next) => {
         ride.origin.latitude,
         ride.origin.longitude
       );
-      console.log(nearbyRiders);
       if (nearbyRiders == undefined) {
         return next(new AppError("No Rides not found", 404));
       }

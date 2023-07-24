@@ -66,8 +66,8 @@ async function findNearbyMatches(originLat, originLng) {
       });
     });
 
-    console.log(nearbyRides);
-    console.log(nearbyRiders);
+    // console.log(nearbyRides);
+    // console.log(nearbyRiders);
 
     return { nearbyRiders, nearbyRides };
   } catch (error) {

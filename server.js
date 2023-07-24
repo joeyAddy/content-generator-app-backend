@@ -25,8 +25,13 @@ io.on("connection", (socket) => {
 
   // Event fired when a rider or traveler shares their details
   socket.on("share_details", async (data) => {
+    console.log("shared_details");
     const matchedData = await findMatch(data, maxDistance);
   });
+
+  const message = "welcome";
+
+  io.emit("message", message);
 
   // Event fired when the client disconnects
   socket.on("disconnect", () => {
