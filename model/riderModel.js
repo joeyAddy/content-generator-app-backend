@@ -17,14 +17,6 @@ const carRiderSchema = new mongoose.Schema({
     required: [true, "please provide your plate Number"],
     unique: true,
   },
-  to: {
-    type: String,
-    required: [true, "please provide your destination"],
-  },
-  from: {
-    type: String,
-    required: [true, "please provide your orgin"],
-  },
   vehicleCode: {
     type: String,
     required: true,

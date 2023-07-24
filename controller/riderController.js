@@ -37,21 +37,6 @@ exports.createRider = catchAsync(async (req, res, next) => {
   } catch (error) {
     next(new AppError(error.message, 400));
   }
-
-  try {
-    // Email data pass to email.js
-    await sendEmail({
-      email: user.email,
-      subject: "LogIn Notification",
-      message: `Login successful, ${user.username}!!!`,
-    });
-
-    // response data
-    user.password = undefined; // hide pass from response
-    createSendToken(user, 200, res);
-  } catch (error) {
-    return next(new AppError("Something went wrong here!!!", 500));
-  }
 });
 
 // Function for retrieving a rider
