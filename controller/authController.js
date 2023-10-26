@@ -26,15 +26,11 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signUp = catchAsync(async (req, res, next) => {
   const createUser = await User.create({
-    _id: new mongoose.Types.ObjectId(),
     email: req.body.email,
     name: req.body.name,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
     phone: req.body.phone,
-    matricNo: req.body?.matricNo,
-    role: req.body.role,
-    origin: req.body.origin,
   });
 
   try {
@@ -42,7 +38,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     await sendEmail({
       email: createUser.email,
       subject: "Sign-Up Notification",
-      message: `Welcome to Trike, ${createUser.username}!!!`,
+      message: `Welcome to CG, ${createUser.username}!!!`,
     });
 
     // response data
@@ -55,31 +51,16 @@ exports.signUp = catchAsync(async (req, res, next) => {
 
 exports.signin = catchAsync(async (req, res, next) => {
   let user = null;
-  if (req.body.role === "rider") {
-    const { email, password } = req.body;
-    // Check email and password exist
-    if (!email && !password) {
-      return next(new AppError("provide correct login details", 400));
-    }
-
-    // Check if user exists & password is correct
-    user = await User.findOne({ email }).select("+password");
-    if (!user || !(await user.comparePassword(password, user.password))) {
-      return next(new AppError("Incorrect email or password", 401));
-    }
+  const { email, password } = req.body;
+  // Check email and password exist
+  if (!email && !password) {
+    return next(new AppError("provide correct login details", 400));
   }
-  if (req.body.role === "student") {
-    const { matricNo, password } = req.body;
-    // Check matricNo and password exist
-    if (!matricNo && !password) {
-      return next(new AppError("provide correct login details", 400));
-    }
 
-    // Check if user exists & password is correct
-    user = await User.findOne({ matricNo }).select("+password");
-    if (!user || !(await user.comparePassword(password, user.password))) {
-      return next(new AppError("Incorrect matricNo or password", 401));
-    }
+  // Check if user exists & password is correct
+  user = await User.findOne({ email }).select("+password");
+  if (!user || !(await user.comparePassword(password, user.password))) {
+    return next(new AppError("Incorrect email or password", 401));
   }
 
   try {
@@ -88,14 +69,14 @@ exports.signin = catchAsync(async (req, res, next) => {
     await sendEmail({
       email: user.email,
       subject: "LogIn Notification",
-      message: `Login successful, ${user.username}!!!`,
+      message: `Login successful, ${user.name}!`,
     });
 
     // response data
     user.password = undefined; // hide pass from response
     createSendToken(user, 200, res);
   } catch (error) {
-    return next(new AppError("Somthing problem here!!!", 500));
+    return next(new AppError("Something is the problem here!", 500));
   }
 });
 

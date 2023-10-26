@@ -2,10 +2,6 @@ let mongoose = require("mongoose");
 let bcrypt = require("bcryptjs");
 
 let userSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
   email: {
     type: String,
     required: [true, "please provide your email"],
@@ -31,22 +27,10 @@ let userSchema = new mongoose.Schema({
     type: String,
     required: [true, "please provide your phone number"],
   },
-  origin: {
-    type: Object,
-    required: [true, "please provide the origin of your trip"],
-  },
+
   name: {
     type: String,
     required: [true, "please provide your name"],
-  },
-  matricNo: {
-    type: String,
-    default: "NIL",
-  },
-  role: {
-    type: String,
-    enum: ["student", "rider", "admin"],
-    default: "student",
   },
 });
 

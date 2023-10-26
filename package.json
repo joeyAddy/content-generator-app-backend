@@ -34,6 +34,8 @@
     "mathjs": "^7.0.2",
     "mongoose": "^7.0.3",
     "nodemailer": "^6.4.10",
+    "openai": "^4.11.0",
+    "readline-sync": "^1.4.10",
     "socket.io": "^4.7.1",
     "uniqid": "^5.4.0"
   }
