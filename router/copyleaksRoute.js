@@ -8,7 +8,7 @@ const copyleaksController = require("../controller/copyleaksController");
 router.get("/login", copyleaksController.loginToCopyleaks);
 router.post("/submit", copyleaksController.submitFileScan);
 router.post("/scan", copyleaksController.startScan);
-router.get("/getscan", copyleaksController.getScanResultById);
+router.get("/scan", copyleaksController.getScanResultById);
 router.post("/webhook/completed/:id", copyleaksController.completedScan);
 router.post("/webhook/error/:id", copyleaksController.errorScan);
 router.post("/webhook/creditsChecked/:id", copyleaksController.creditsChecked);

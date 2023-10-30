@@ -192,16 +192,26 @@ exports.creditsChecked = catchAsync(async (req, res) => {
 });
 
 exports.getScanResultById = catchAsync(async (req, res) => {
+  let scanResultId = "";
+  scanResultId = req.query.id;
+  console.log("====================================");
+  console.log(scanResultId);
+  console.log("===================================="); // Get the scan result ID from req.params
   try {
-    const scanResultId = req.params.id; // Get the scan result ID from req.params
-
+    if (scanResultId === "") return;
     // Find the scan result by its ID
     const scanResult = await ScanResult.findOne({ id: scanResultId });
 
     if (!scanResult) {
+      console.log("====================================");
+      console.log("No results found");
+      console.log("====================================");
       return sendErrorResponse(res, "Scan result not found", 404);
     }
 
+    console.log("====================================");
+    console.log(scanResult);
+    console.log("====================================");
     return sendSuccessResponse(
       res,
       scanResult,
