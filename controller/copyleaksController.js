@@ -38,6 +38,8 @@ const sendErrorResponse = (res, errorMessage, statusCode, error) => {
 
 // copyleaksController.js
 const axios = require("axios");
+const ScanResult = require("../model/plagiarismScanModel");
+const AppError = require("../util/appError");
 
 exports.loginToCopyleaks = catchAsync(async (req, res) => {
   const headers = {
@@ -144,6 +146,38 @@ exports.completedScan = catchAsync(async (req, res) => {
   console.log("====================================");
   console.log(req.body);
   console.log("====================================");
+
+  try {
+    // Extract data from the request body
+    const id = req.body.scannedDocument.scanId;
+    const result = req.body.results.score;
+
+    // Check if the scan result with the same ID already exists
+    const existingResult = await ScanResult.findOne({ id });
+
+    if (existingResult) {
+      console.log("====================================");
+      console.log(
+        "Scan result with ID " + existingResult.id + " already exists"
+      );
+      console.log("====================================");
+    }
+
+    // Create a new scan result
+    const newScanResult = new ScanResult({
+      id,
+      result,
+    });
+
+    // Save the new scan result to the database
+    await newScanResult.save();
+    console.log("====================================");
+    console.log(`Saved result: ${newScanResult}`);
+    console.log("====================================");
+  } catch (error) {
+    console.error("Error adding scan result:", error);
+    return next(new AppError(`Failed to save scan result for ${id}`, 500));
+  }
 });
 
 exports.errorScan = catchAsync(async (req, res) => {
@@ -156,4 +190,27 @@ exports.creditsChecked = catchAsync(async (req, res) => {
   console.log("====================================");
   console.log(req.body);
   console.log("====================================");
+});
+
+exports.getScanResultById = catchAsync(async (req, res) => {
+  try {
+    const scanResultId = req.params.id; // Get the scan result ID from req.params
+
+    // Find the scan result by its ID
+    const scanResult = await ScanResult.findOne({ id: scanResultId });
+
+    if (!scanResult) {
+      return sendErrorResponse(res, "Scan result not found", 404);
+    }
+
+    return sendSuccessResponse(
+      res,
+      scanResult,
+      "Started scanning file successfully",
+      200
+    );
+  } catch (error) {
+    console.error("Error getting scan result by ID:", error);
+    return sendErrorResponse(res, "Failed to scan result", 500);
+  }
 });
