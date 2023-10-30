@@ -93,8 +93,13 @@ exports.submitFileScan = catchAsync(async (req, res) => {
 
   try {
     const response = await axios(options);
-    console.log(response.data);
-    sendSuccessResponse(res, response.data, "submitted file successfully", 200);
+    console.log(response.status);
+    sendSuccessResponse(
+      res,
+      { id, status: response.status },
+      "submitted file successfully",
+      200
+    );
   } catch (error) {
     console.error(error);
     sendErrorResponse(res, "Failed to submit file to CopyLeaks.", 500);

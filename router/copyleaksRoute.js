@@ -6,16 +6,10 @@ const copyleaksController = require("../controller/copyleaksController");
 
 // Define the route for making the POST request
 router.get("/login", copyleaksController.loginToCopyleaks);
-router.put("/submit", copyleaksController.submitFileScan);
-router.put("/scan", copyleaksController.startScan);
-router.put(
-  "/webhook/completed/{STATUS}/:id",
-  copyleaksController.completedScan
-);
-router.put("/webhook/error/{STATUS}/:id", copyleaksController.errorScan);
-router.put(
-  "/webhook/creditsChecked/{STATUS}/:id",
-  copyleaksController.creditsChecked
-);
+router.post("/submit", copyleaksController.submitFileScan);
+router.post("/scan", copyleaksController.startScan);
+router.post("/webhook/completed/:id", copyleaksController.completedScan);
+router.post("/webhook/error/:id", copyleaksController.errorScan);
+router.post("/webhook/creditsChecked/:id", copyleaksController.creditsChecked);
 
 module.exports = router;
