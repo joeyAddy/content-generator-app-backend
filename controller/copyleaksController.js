@@ -176,7 +176,6 @@ exports.completedScan = catchAsync(async (req, res) => {
     console.log("====================================");
   } catch (error) {
     console.error("Error adding scan result:", error);
-    return next(new AppError(`Failed to save scan result for ${id}`, 500));
   }
 });
 
