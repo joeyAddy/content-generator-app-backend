@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const catchAsync = require("../util/catchAsync");
-const AppError = require("../util/appError");
+const uuid = require("uuid");
 
 // Make JWT token
 const createToken = (id) => {
@@ -64,4 +64,91 @@ exports.loginToCopyleaks = catchAsync(async (req, res) => {
     console.error(error);
     sendErrorResponse(res, "Failed to get login to CopyLeaks.", 500);
   }
+});
+
+exports.submitFileScan = catchAsync(async (req, res) => {
+  const id = uuid.v4();
+  const { accessToken, base64 } = req.body;
+  const headers = {
+    "Content-type": "application/json",
+    Authorization: `Bearer ${accessToken}`,
+  };
+
+  const data = {
+    base64: base64,
+    filename: "file.txt",
+    properties: {
+      webhooks: {
+        status: `https://cg-backend-bmn4.onrender.com/api/copyleaks/webhook/{STATUS}/${id}`,
+      },
+    },
+  };
+
+  const options = {
+    method: "PUT",
+    headers: headers,
+    data: data,
+    url: `https://api.copyleaks.com/v3/scans/submit/file/${id}`,
+  };
+
+  try {
+    const response = await axios(options);
+    console.log(response.data);
+    sendSuccessResponse(res, response.data, "submitted file successfully", 200);
+  } catch (error) {
+    console.error(error);
+    sendErrorResponse(res, "Failed to submit file to CopyLeaks.", 500);
+  }
+});
+
+exports.startScan = catchAsync(async (req, res) => {
+  const { id, accessToken } = req.body;
+  const headers = {
+    "Content-type": "application/json",
+    Authorization: `Bearer ${accessToken}`,
+  };
+
+  const data = {
+    trigger: [`${id}`],
+    errorHandling: 0,
+  };
+
+  const options = {
+    method: "PATCH",
+    headers: headers,
+    data: data,
+    url: "https://api.copyleaks.com/v3/scans/start",
+  };
+
+  try {
+    const response = await axios(options);
+    console.log(response.data);
+    sendSuccessResponse(
+      res,
+      response.data,
+      "Started scanning file successfully",
+      200
+    );
+  } catch (error) {
+    console.error(error);
+    sendErrorResponse(res, "Failed to start scanning file in CopyLeaks.", 500);
+  }
+});
+
+exports.completedScan = catchAsync(async (req, res) => {
+  console.log("====================================");
+  console.log(req.body);
+  console.log("====================================");
+});
+
+exports.errorScan = catchAsync(async (req, res) => {
+  console.log("====================================");
+  console.log(req.body);
+  console.log("====================================");
+});
+
+exports.creditsChecked = catchAsync(async (req, res) => {
+  console.log("====================================");
+  console.log(req.body);
+  console.log("====================================");
 });
