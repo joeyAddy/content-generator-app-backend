@@ -23,14 +23,13 @@ let userSchema = new mongoose.Schema({
     },
     message: "Passwords do not match",
   },
-  phone: {
-    type: String,
-    required: [true, "please provide your phone number"],
-  },
 
-  name: {
+  fullName: {
     type: String,
     required: [true, "please provide your name"],
+  },
+  profileImage: {
+    type: String,
   },
 });
 

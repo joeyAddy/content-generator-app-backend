@@ -27,18 +27,55 @@ const createSendToken = (user, statusCode, res) => {
 exports.signUp = catchAsync(async (req, res, next) => {
   const createUser = await User.create({
     email: req.body.email,
-    name: req.body.name,
+    fullName: req.body.fullName,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
-    phone: req.body.phone,
+    profileImage: req.body.profileImage,
   });
+
+  const emailMessage = `
+  <html>
+    <head>
+      <style>
+        /* Add your CSS styles here */
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f0f0f0;
+          text-align: center;
+        }
+        .container {
+          background-color: #ffffff;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px auto;
+          max-width: 600px;
+        }
+        .header {
+          background-color: #0078d4;
+          color: #fff;
+          padding: 10px;
+          border-radius: 10px 10px 0 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Welcome to CG</h1>
+        </div>
+        <p>Hello ${createUser.fullName},</p>
+        <p>Thank you for signing up with CG. We're excited to have you on board!</p>
+      </div>
+    </body>
+  </html>
+`;
 
   try {
     // Email data pass to email.js
     await sendEmail({
       email: createUser.email,
       subject: "Sign-Up Notification",
-      message: `Welcome to CG, ${createUser.username}!!!`,
+      message: emailMessage,
     });
 
     // response data
@@ -60,6 +97,7 @@ exports.signin = catchAsync(async (req, res, next) => {
   // Check if user exists & password is correct
   user = await User.findOne({ email }).select("+password");
   if (!user || !(await user.comparePassword(password, user.password))) {
+    res.json({ data: { message: "Invalid email or password", status: 401 } });
     return next(new AppError("Incorrect email or password", 401));
   }
 
