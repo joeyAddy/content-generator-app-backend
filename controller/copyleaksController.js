@@ -176,6 +176,9 @@ exports.completedScan = catchAsync(async (req, res) => {
     console.log("====================================");
 
     global.io.on("join", (roomId) => {
+      console.log("====================================");
+      console.log("Someone joined the room");
+      console.log("====================================");
       if (roomId === id)
         // Emit an event using the global io instance
         global.io.to(roomId).emit("resultSaved", newScanResult);
