@@ -161,6 +161,7 @@ exports.completedScan = catchAsync(async (req, res) => {
         "Scan result with ID " + existingResult.id + " already exists"
       );
       console.log("====================================");
+      return;
     }
 
     // Create a new scan result
@@ -177,23 +178,8 @@ exports.completedScan = catchAsync(async (req, res) => {
 
     const io = global.io;
 
-    console.log("====================================");
-    console.log("global io instance", global.io);
-    console.log("====================================");
-
-    io.on("join", (roomId) => {
-      console.log("====================================");
-      console.log("Someone joined the room", roomId, id);
-      console.log("====================================");
-
-      if (roomId === id) {
-        //join room with roomId
-        io.join(roomId);
-
-        // Emit an event using the global io instance
-        io.to(roomId).emit("resultSaved", newScanResult);
-      }
-    });
+    // Emit an event using the global io instance
+    io.to(id).emit("resultSaved", newScanResult);
   } catch (error) {
     console.error("Error adding scan result:", error);
   }

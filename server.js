@@ -27,6 +27,13 @@ global.io = io;
 io.on("connection", (socket) => {
   console.log("A user connected.");
 
+  socket.on("join", (roomId) => {
+    socket.join(roomId);
+    console.log("====================================");
+    console.log("joined room: " + roomId);
+    console.log("====================================");
+  });
+
   // Handle disconnection
   socket.on("disconnect", () => {
     console.log("A user disconnected.");
