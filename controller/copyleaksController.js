@@ -174,6 +174,9 @@ exports.completedScan = catchAsync(async (req, res) => {
     console.log("====================================");
     console.log(`Saved result: ${newScanResult}`);
     console.log("====================================");
+
+    // Emit an event using the global io instance
+    global.io.to(id).emit("resultSaved", newScanResult);
   } catch (error) {
     console.error("Error adding scan result:", error);
   }
