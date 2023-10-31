@@ -175,9 +175,13 @@ exports.completedScan = catchAsync(async (req, res) => {
     console.log(`Saved result: ${newScanResult}`);
     console.log("====================================");
 
+    console.log("====================================");
+    console.log("global io instance", global.io);
+    console.log("====================================");
+
     global.io.on("join", (roomId) => {
       console.log("====================================");
-      console.log("Someone joined the room");
+      console.log("Someone joined the room", roomId);
       console.log("====================================");
 
       if (roomId === id)
