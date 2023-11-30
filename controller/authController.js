@@ -101,13 +101,50 @@ exports.signin = catchAsync(async (req, res, next) => {
     return next(new AppError("Incorrect email or password", 401));
   }
 
+  const emailMessage = `
+  <html>
+    <head>
+      <style>
+        /* Add your CSS styles here */
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f0f0f0;
+          text-align: center;
+        }
+        .container {
+          background-color: #ffffff;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px auto;
+          max-width: 600px;
+        }
+        .header {
+          background-color: #0078d4;
+          color: #fff;
+          padding: 10px;
+          border-radius: 10px 10px 0 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Welcome back to CG</h1>
+        </div>
+        <p>Hello ${user.fullName},</p>
+        <p>You logged in succesfully! Enjoy the Experience!</p>
+      </div>
+    </body>
+  </html>
+`;
+
   try {
     if (user === null) return;
     // Email data pass to email.js
     await sendEmail({
       email: user.email,
       subject: "LogIn Notification",
-      message: `Login successful, ${user.name}!`,
+      message: emailMessage,
     });
 
     // response data
