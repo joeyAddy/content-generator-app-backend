@@ -22,7 +22,7 @@ var sendEmail = async (options) => {
 
   // Define the email options
   let mailOptions = {
-    from: "joey.dev.biz@gmail.com",
+    from: "goodnessomenuko@gmail.com",
     to: options.email,
     subject: options.subject,
     html: options.message,
